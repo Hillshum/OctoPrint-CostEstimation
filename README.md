@@ -40,6 +40,7 @@ See https://github.com/OllisGit/OctoPrint-CostEstimation/issues/9
 ## Screenshots
 
 ![CostEstimation](screenshots/costestimation.png?raw=true)
+![CostEstimation](screenshots/costestimation-tooltip.png?raw=true)
 
 ![CostEstimation Settings](screenshots/costestimation_settings.png?raw=true)
 

@@ -129,8 +129,26 @@ class CostEstimationPlugin(octoprint.plugin.SettingsPlugin,
                 repo="OctoPrint-CostEstimation",
                 current=self._plugin_version,
 
+                stable_branch=dict(
+                    name="Only Release",
+                    branch="master",
+                    comittish=["master"]
+                ),
+                prerelease_branches=[
+                    dict(
+                        name="Release & Candidate",
+                        branch="pre-release",
+                        comittish=["pre-release", "master"],
+                    ),
+                    dict(
+                        name="Release & Candidate & in development",
+                        branch="development",
+                        comittish=["development", "pre-release", "master"],
+                    )
+                ],
+
                 # update method: pip
-                pip="https://github.com/OllisGit/OctoPrint-CostEstimation/releases/latest/download/master.zip"
+                pip = "https://github.com/OllisGit/OctoPrint-CostEstimation/releases/download/{target_version}/master.zip"
             )
         )
 

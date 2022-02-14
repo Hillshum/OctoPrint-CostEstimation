@@ -33,6 +33,8 @@ $(function() {
         });
 
         self.lastCostResult = null;
+        self.estimatedCostDetailsString = ko.observable();
+
         self.estimatedCostString = ko.pureComputed(function() {
 
             if (!self.showEstimatedCost()) return "user not logged in";
@@ -40,6 +42,7 @@ $(function() {
             if (self.printerState.filament().length == 0) return "no filament from meta";
 
             var pluginSettings = self.settings.settings.plugins.costestimation;
+            self.selfPluginSettings = pluginSettings;
             var jobFilament =  self.printerState.filament();
 
             var withDefaultSpoolValues = false;
@@ -82,6 +85,13 @@ $(function() {
                 var filamentVolume = self.calculateVolume(filamentLength, diameterOfFilament) / 1000;
 
                 filamentCost += costPerWeight * filamentVolume * densityOfFilament;
+            }
+
+            formatCurrency = function(currencyValue){
+                var currencySymbol = self.selfPluginSettings.currency();
+                var currencyFormat = self.selfPluginSettings.currencyFormat();
+                var costsFormatted = currencyFormat.replace("%v", currencyValue.toFixed(2)).replace("%s", currencySymbol);
+                return costsFormatted;
             }
 
             // - calculating electricity cost
@@ -133,6 +143,17 @@ $(function() {
                     // do nothing
                 });
             }
+
+            var estimatedCostDetailsString = ""
+            + "Est. Printtime: " + formatDuration(self.printerState.estimatedPrintTime()) +"\n"
+            + "\n"
+            + "* Filament: " + formatCurrency(filamentCost) + "\n"
+            + "* Electricity: " + formatCurrency(electricityCost) + "\n"
+            + "* Printer: " + formatCurrency(printerCost) +"\n";
+
+
+            self.estimatedCostDetailsString(estimatedCostDetailsString);
+
             return totalCostsFormatted;
         });
 
@@ -146,7 +167,9 @@ $(function() {
             if (element.length) {
                 var name = gettext("Cost");
                 var text = gettext("Estimated print cost based on required quantity of filament and print time");
-                element.before("<div id='costestimation_string' data-bind='visible: showEstimatedCost()'><span title='" + text + "'>" + name + "</span>: <strong data-bind='text: estimatedCostString'></strong></div>");
+                element.before("<div id='costestimation_string' data-bind='visible: showEstimatedCost()'>" +
+                    "<span title='" + text + "'>" + name + "</span>: <strong data-bind='text: estimatedCostString, attr:{title: estimatedCostDetailsString}'></strong>" +
+                    "</div>");
             }
 
             self.settings.settings.plugins.costestimation.useFilamentManager.subscribe(function(newValue){
