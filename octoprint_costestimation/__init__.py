@@ -71,13 +71,14 @@ class CostEstimationPlugin(octoprint.plugin.SettingsPlugin,
             requiresLogin=False,
             useFilamentManager=True,
             useSpoolManager=False,
+            useSpoolman=False,
             priceOfPrinter=0,            # €
             lifespanOfPrinter=0,         # h
             maintenanceCosts=0,          # €/h
         )
 
     def get_settings_version(self):
-        return 3
+        return 4
 
     def on_settings_migrate(self, target, current=None):
         if current is None or current == 1:
