@@ -27,6 +27,18 @@
                 <!-- /ko -->
             </label>
         </div>
+        <div class="controls">
+            <label class="checkbox">
+                <input name="filamentTracker" type="checkbox" data-bind="checked: $root.settings.settings.plugins.costestimation.useSpoolman, enable: $root.spoolman !== null">
+                {{ _('Use <a target="_blank" href="https://github.com/OllisGit/OctoPrint-Spoolman">Spoolman</a>') }}
+                <!-- ko if: $root.spoolman !== null -->
+                <span class="text-success">{{ _("(installed)") }}</span>
+                <!-- /ko -->
+                <!-- ko if: $root.spoolman === null -->
+                <span class="text-error">{{ _("(not installed)") }}</span>
+                <!-- /ko -->
+            </label>
+        </div>
     </div>
 
     <div data-bind="visible: $root.showFilamentGroup()==false">
