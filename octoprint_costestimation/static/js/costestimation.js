@@ -236,7 +236,7 @@ $(function() {
                 if (spool.spoolId == null) continue;
                 const pulledData = {
                     cost: spool.spoolData.price || spool.spoolData.filament.price || 0,
-                    weight: spool.spoolData.remaining_weight || 0,
+                    weight: spool.spoolData.initial_weight || 0,
                     profile: {
                         density: spool.spoolData.filament.density || 0,
                         diameter: spool.spoolData.filament.diameter || 0
