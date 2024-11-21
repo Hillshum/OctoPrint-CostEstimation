@@ -125,7 +125,7 @@ class CostEstimationPlugin(octoprint.plugin.SettingsPlugin,
 
                 # version check: github repository
                 type="github_release",
-                user="OllisGit",
+                user="Hillshum",
                 repo="OctoPrint-CostEstimation",
                 current=self._plugin_version,
 
@@ -148,7 +148,7 @@ class CostEstimationPlugin(octoprint.plugin.SettingsPlugin,
                 ],
 
                 # update method: pip
-                pip = "https://github.com/OllisGit/OctoPrint-CostEstimation/releases/download/{target_version}/master.zip"
+                pip = "https://github.com/Hillshum/OctoPrint-CostEstimation/releases/download/{target_version}/master.zip"
             )
         )
 
