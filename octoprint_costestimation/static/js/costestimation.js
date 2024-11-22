@@ -19,17 +19,23 @@ $(function() {
         self.filamentManager = parameters[3];
         self.spoolManager = parameters[4];
         self.filesViewModel = parameters[5];
+        self.spoolman = parameters[6];
 
         self.showEstimatedCost = ko.pureComputed(function() {
             return self.settings.settings.plugins.costestimation.requiresLogin() ?
                 self.loginState.isUser() : true;
         });
 
-        self.showFilamentGroup = ko.pureComputed(function() {
-            // var filamentManagerDisabled = self.filamentManager === null || !self.settings.settings.plugins.costestimation.useFilamentManager();
-            // var spoolManagerDisabled = self.spoolManager === null || !self.settings.settings.plugins.costestimation.useSpoolManager();
-            // return !filamentManagerDisabled && !spoolManagerDisabled;
-            return self.settings.settings.plugins.costestimation.useFilamentManager() == false && self.settings.settings.plugins.costestimation.useSpoolManager() == false;
+        self.showDefaultsMessage = ko.pureComputed(function() {
+
+            const intergrationBools = [
+                self.settings.settings.plugins.costestimation.useFilamentManager(),
+                self.settings.settings.plugins.costestimation.useSpoolManager(),
+                self.settings.settings.plugins.costestimation.useSpoolman(),
+            ]
+
+            return intergrationBools.some((bool) => bool);
+            
         });
 
         self.lastCostResult = null;
@@ -52,6 +58,8 @@ $(function() {
                 spoolData = self.filamentManager.selectedSpools();
             } else if (self.spoolManager !== null && pluginSettings.useSpoolManager()) {
                 spoolData = self.readSpoolManagerData();
+            } else if (self.spoolman !== null && pluginSettings.useSpoolman()) {
+                spoolData = self.readSpoolmanData();
             }
 
             // - calculating filament cost
@@ -175,11 +183,19 @@ $(function() {
             self.settings.settings.plugins.costestimation.useFilamentManager.subscribe(function(newValue){
                 if (newValue == true){
                     self.settings.settings.plugins.costestimation.useSpoolManager(false);
+                    self.settings.settings.plugins.costestimation.useSpoolman(false);
                 }
             });
             self.settings.settings.plugins.costestimation.useSpoolManager.subscribe(function(newValue){
                 if (newValue == true){
                     self.settings.settings.plugins.costestimation.useFilamentManager(false);
+                    self.settings.settings.plugins.costestimation.useSpoolman(false);
+                }
+            });
+            self.settings.settings.plugins.costestimation.useSpoolman.subscribe(function(newValue){
+                if (newValue == true){
+                    self.settings.settings.plugins.costestimation.useFilamentManager(false);
+                    self.settings.settings.plugins.costestimation.useSpoolManager(false);
                 }
             });
         };
@@ -214,6 +230,28 @@ $(function() {
             if (self.spoolManager === null){
                 self.settings.settings.plugins.costestimation.useSpoolManager(false);
             }
+            if (self.spoolman === null){
+                self.settings.settings.plugins.costestimation.useSpoolman(false);
+            }
+        }
+
+        self.readSpoolmanData = function() {
+            const result = [];
+            if (self.spoolman == null || self.settings.settings.plugins.costestimation.useSpoolman() == false)
+                return null;
+            for (const spool of self.spoolman.templateData.selectedSpoolsByToolIdx()) {
+                if (spool.spoolId == null) continue;
+                const pulledData = {
+                    cost: spool.spoolData.price || spool.spoolData.filament.price || 0,
+                    weight: spool.spoolData.initial_weight || 0,
+                    profile: {
+                        density: spool.spoolData.filament.density || 0,
+                        diameter: spool.spoolData.filament.diameter || 0
+                    }
+                };
+                result.push(pulledData)
+            }
+            return result;
         }
 
         self.readSpoolManagerData = function() {
@@ -270,8 +308,8 @@ $(function() {
         construct: CostEstimationViewModel,
         dependencies: ["printerStateViewModel", "settingsViewModel",
                        "loginStateViewModel", "filamentManagerViewModel",
-                       "spoolManagerViewModel", "filesViewModel"],
-        optional: ["filamentManagerViewModel","spoolManagerViewModel"],
+                       "spoolManagerViewModel", "filesViewModel", "spoolmanSidebarViewModel"],
+        optional: ["filamentManagerViewModel","spoolManagerViewModel", "spoolmanSidebarViewModel"],
         elements: ["#costestimation_string", "#settings_plugin_costestimation"]
     });
 });
