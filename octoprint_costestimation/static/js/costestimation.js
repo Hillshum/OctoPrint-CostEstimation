@@ -235,8 +235,10 @@ $(function() {
             }
         }
 
-        self.readSpoolmanData = ko.computed(function() {
+        self.readSpoolmanData = function() {
             const result = [];
+            if (self.spoolman == null || self.settings.settings.plugins.costestimation.useSpoolman() == false)
+                return null;
             for (const spool of self.spoolman.templateData.selectedSpoolsByToolIdx()) {
                 if (spool.spoolId == null) continue;
                 const pulledData = {
@@ -250,7 +252,7 @@ $(function() {
                 result.push(pulledData)
             }
             return result;
-        })
+        }
 
         self.readSpoolManagerData = function() {
             // needed data
