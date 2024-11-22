@@ -26,11 +26,16 @@ $(function() {
                 self.loginState.isUser() : true;
         });
 
-        self.showFilamentGroup = ko.pureComputed(function() {
-            // var filamentManagerDisabled = self.filamentManager === null || !self.settings.settings.plugins.costestimation.useFilamentManager();
-            // var spoolManagerDisabled = self.spoolManager === null || !self.settings.settings.plugins.costestimation.useSpoolManager();
-            // return !filamentManagerDisabled && !spoolManagerDisabled;
-            return self.settings.settings.plugins.costestimation.useFilamentManager() == false && self.settings.settings.plugins.costestimation.useSpoolManager() == false;
+        self.showDefaultsMessage = ko.pureComputed(function() {
+
+            const intergrationBools = [
+                self.settings.settings.plugins.costestimation.useFilamentManager(),
+                self.settings.settings.plugins.costestimation.useSpoolManager(),
+                self.settings.settings.plugins.costestimation.useSpoolman(),
+            ]
+
+            return intergrationBools.some((bool) => bool);
+            
         });
 
         self.lastCostResult = null;
