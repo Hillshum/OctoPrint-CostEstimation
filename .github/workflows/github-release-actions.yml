@@ -27,7 +27,7 @@ jobs:
       # - run: zip -r master.zip * -i '\octoprint_*' 'translations' 'README.md' 'requirements.txt' 'setup.py'
         run: python setup.py sdist --formats=zip
       - name: ⬆ Upload build result
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v4
         with:
           name: dist
           path: dist
