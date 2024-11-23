@@ -17,8 +17,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: 🏗 Install build dependencies
-        run: |
-        python -m pip install wheel octoprint --user
+        run: python -m pip install wheel octoprint --user
 
       # - run: echo "Read current plugin version..."
       # - run: export PLUGIN_VERSION=$(cat setup.py | grep 'plugin_version = "*"' | cut -d '"' -f2)
