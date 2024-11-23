@@ -16,13 +16,17 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v2
 
+      - name: 🏗 Install build dependencies
+        run: |
+        python -m pip install wheel octoprint --user
+
       # - run: echo "Read current plugin version..."
       # - run: export PLUGIN_VERSION=$(cat setup.py | grep 'plugin_version = "*"' | cut -d '"' -f2)
       # - run: echo "Plugin Version  $PLUGIN_VERSION ${PLUGIN_VERSION}"
 
-      - run: echo "Build ZIP"
+      - name: "Build ZIP"
       # - run: zip -r master.zip * -i '\octoprint_*' 'translations' 'README.md' 'requirements.txt' 'setup.py'
-      - run: python setup.py sdist --formats=zip
+        run: python setup.py sdist --formats=zip
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}
