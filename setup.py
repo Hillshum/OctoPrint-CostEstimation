@@ -55,5 +55,6 @@ if len(additional_setup_parameters):
 
 if __name__ == "__main__":
     version, cmdclass = get_version_and_cmdclass(plugin_package)
+    setup_parameters["cmdclass"] = cmdclass
     setup_parameters["version"] = version
     setup(**setup_parameters)
