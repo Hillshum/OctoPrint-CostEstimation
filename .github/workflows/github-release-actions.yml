@@ -3,7 +3,7 @@
 ###
 
 name: Build Plugin Action
-on: [push]
+on: [push, release]
 jobs:
   build:
     name: 🏗 Build
