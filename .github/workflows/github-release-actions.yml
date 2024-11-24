@@ -1,11 +1,6 @@
 ###
 ### Simple script to build a zip file of the whole repository
 ###
-## Major - Tasks:
-#  - ZIP
-#  - Build draft release
-#  - Attach Zip
-#  - Download Zip
 
 name: Build Plugin Action
 on: [push]
@@ -34,48 +29,3 @@ jobs:
         with:
           name: "build"
           path: ${{ env.ZIP_FILE }}
-
-
-
-#       - name: release
-#         uses: actions/create-release@latest
-#         id: create_release
-#         env:
-#           GITHUB_TOKEN: ${{ github.token }}
-#         with:
-#           draft: true
-#           commitish: ${{ steps.branch.outputs.branch_name }}
-#           prerelease: false
-#           release_name: V${{ steps.version.outputs.version }}-draft
-#           tag_name: ${{ steps.version.outputs.version }}-draft
-#           body: |
-#             ## [BugFix]
-#             - #xxx
-
-#             ## [Enhancement]
-#             - #xxx
-
-#             ## Counter
-#             ![downloaded](https://img.shields.io/github/downloads/OllisGit/${{ steps.branch.outputs.repo_name }}/${{ steps.version.outputs.version }}/total)
-
-#             ## Support my Efforts
-#             This plugin, as well as my [other plugins](https://github.com/OllisGit/) were developed in my spare time.
-#             If you like it, I would be thankful about a cup of coffee :)
-
-#             [![More coffee, more code](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6SW5R6ZUKLB5E&source=url)
-# #          body_path: RELEASE_TEMPLATE.md
-
-#       - name: upload master.zip to release
-#         uses: actions/upload-release-asset@v1
-#         env:
-#           GITHUB_TOKEN: ${{ github.token }}
-#         with:
-#           upload_url: ${{ steps.create_release.outputs.upload_url }}
-#           asset_path: master.zip
-#           asset_name: master.zip
-#           asset_content_type: application/gzip
-
-#       - name: download master.zip
-#         run: curl -O -J -L -v https://github.com/OllisGit/${{ steps.branch.outputs.repo_name }}/releases/download/${{ steps.version.outputs.version }}/master.zip
-
-#       - run: echo "🍏 This job's status is ${{ job.status }}."
