@@ -1,84 +1,55 @@
 ###
 ### Simple script to build a zip file of the whole repository
 ###
-## Major - Tasks:
-#  - ZIP
-#  - Build draft release
-#  - Attach Zip
-#  - Download Zip
 
-name: Build Plugin Release - Action
+name: Build Plugin Action
 on: [push]
 jobs:
-  Build-Release-ZIP-Action:
+  build:
+    name: 🏗 Build
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository code
-        uses: actions/checkout@v2
-
-      - run: echo "Read current plugin version..."
-      - run: export PLUGIN_VERSION=$(cat setup.py | grep 'plugin_version = "*"' | cut -d '"' -f2)
-      - run: echo "Plugin Version  $PLUGIN_VERSION ${PLUGIN_VERSION}"
-
-      - run: echo "Build ZIP"
-      - run: zip -r master.zip * -i '\octoprint_*' 'translations' 'README.md' 'requirements.txt' 'setup.py'
-      - name: List files in the repository
-        run: |
-          ls ${{ github.workspace }}
-
-      - name: version
-        run: echo "::set-output name=version::$(cat setup.py | grep 'plugin_version = "*"' | cut -d '"' -f2)"
-        id: version
-
-      - name: Repository and Branch name
-        id: branch
-        run: |
-               export branch_name=${GITHUB_REF##*/}
-               echo "::set-output name=branch_name::$branch_name"
-               echo running on branch $branch_name
-               export repo_name=${GITHUB_REPOSITORY#*/}
-               echo "::set-output name=repo_name::$repo_name"
-
-
-      - name: release
-        uses: actions/create-release@latest
-        id: create_release
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+        uses: actions/checkout@v4
         with:
-          draft: true
-          commitish: ${{ steps.branch.outputs.branch_name }}
-          prerelease: false
-          release_name: V${{ steps.version.outputs.version }}-draft
-          tag_name: ${{ steps.version.outputs.version }}-draft
-          body: |
-            ## [BugFix]
-            - #xxx
+          fetch-depth: 0
 
-            ## [Enhancement]
-            - #xxx
+      - name: 🏗 Install build dependencies
+        run: python -m pip install wheel octoprint --user
 
-            ## Counter
-            ![downloaded](https://img.shields.io/github/downloads/OllisGit/${{ steps.branch.outputs.repo_name }}/${{ steps.version.outputs.version }}/total)
+      - name: "Build ZIP"
+        run: python setup.py sdist --formats=zip
+      
+      - name: "Set ZIP_FILE"
+        run: echo "ZIP_FILE=$(ls dist/*.zip)" >> $GITHUB_ENV
 
-            ## Support my Efforts
-            This plugin, as well as my [other plugins](https://github.com/OllisGit/) were developed in my spare time.
-            If you like it, I would be thankful about a cup of coffee :)
-
-            [![More coffee, more code](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=6SW5R6ZUKLB5E&source=url)
-#          body_path: RELEASE_TEMPLATE.md
-
-      - name: upload master.zip to release
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+      - name: ⬆ Upload build result
+        uses: actions/upload-artifact@v4
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: master.zip
-          asset_name: master.zip
-          asset_content_type: application/gzip
+          name: "build"
+          path: ${{ env.ZIP_FILE }}
 
-      - name: download master.zip
-        run: curl -O -J -L -v https://github.com/OllisGit/${{ steps.branch.outputs.repo_name }}/releases/download/${{ steps.version.outputs.version }}/master.zip
-
-      - run: echo "🍏 This job's status is ${{ job.status }}."
+  test-install:
+    name: 🧪 Installation tests
+    needs: build
+    strategy:
+      matrix:
+        python: ["3.7", "3.8"]
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🏗 Set up Python ${{ matrix.python }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: ⬇ Download build result
+        uses: actions/download-artifact@v4
+        with:
+          name: build
+          path: dist
+      - name: 🏗 Install dependencies
+        run: |
+          python -m pip install --upgrade wheel setuptools pip
+          python -m pip install octoprint
+      - name: 🧪 Test install of package
+        run: |
+          python -m pip install dist/OctoPrint-CostEstimation-*.zip
