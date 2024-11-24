@@ -18,6 +18,7 @@ jobs:
 
       - name: Show git status
         run: git status
+      - run: git log 
       - name: 🏗 Install build dependencies
         run: python -m pip install wheel octoprint --user
 
