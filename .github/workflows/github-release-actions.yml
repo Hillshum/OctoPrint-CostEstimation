@@ -28,7 +28,7 @@ jobs:
         run: python setup.py sdist --formats=zip
       
       - name: "Set ZIP_FILE"
-        run: echo "ZIP_FILE=$(echo $GITHUB_SHA | cut -c 1-6)" >> $GITHUB_ENV
+        run: echo "ZIP_FILE=$(ls dist/*.zip)" >> $GITHUB_ENV
       - run: 'echo "ZIP_FILE: $ZIP_FILE"'
       - name: ⬆ Upload build result
         uses: actions/upload-artifact@v4
