@@ -9,6 +9,21 @@ import flask
 import octoprint.plugin
 from flask import request
 
+from ._version import get_data as get_version_data
+
+# ~~ version
+
+
+version_data = get_version_data()
+
+__version__ = version_data["version"]
+__branch__ = version_data["branch"]
+__display_version__ = __version__
+__revision__ = version_data["revision"]
+
+del version_data
+del get_version_data
+
 
 class CostEstimationPlugin(octoprint.plugin.SettingsPlugin,
                            octoprint.plugin.AssetPlugin,
@@ -71,13 +86,14 @@ class CostEstimationPlugin(octoprint.plugin.SettingsPlugin,
             requiresLogin=False,
             useFilamentManager=True,
             useSpoolManager=False,
+            useSpoolman=False,
             priceOfPrinter=0,            # €
             lifespanOfPrinter=0,         # h
             maintenanceCosts=0,          # €/h
         )
 
     def get_settings_version(self):
-        return 3
+        return 4
 
     def on_settings_migrate(self, target, current=None):
         if current is None or current == 1:
