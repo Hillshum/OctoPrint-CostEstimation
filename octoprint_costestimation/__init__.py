@@ -33,6 +33,8 @@ class CostEstimationPlugin(octoprint.plugin.SettingsPlugin,
     def initialize(self):
         self.costData = None
 
+    def is_blueprint_csrf_protected(self):
+        return True
 
     #######################################################################################   UPDATE JOB
     @octoprint.plugin.BlueprintPlugin.route("/storeCurrentCosts", methods=["PUT"])
