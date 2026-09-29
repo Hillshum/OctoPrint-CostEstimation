@@ -1,0 +1,46 @@
+[build-system]
+requires = [
+    "setuptools>=68",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "OctoPrint-CostEstimation"
+description = "Displays the estimated print cost for the loaded model"
+authors = [
+    { name = "Sven Lohrmann", email = "malnvenshorn@mailbox.org" },
+    { name = "Olli", email = "ollisgit@gmail.com" },
+    { name = "Hilton Shumway", email = "hillshum@gmail.com" }
+]
+maintainers = [
+    { name = "Hilton Shumway", email = "hillshum@gmail.com" }
+]
+requires-python = ">=3.7,<4"
+dependencies = ["OctoPrint"]
+dynamic = [
+    "license",
+    "version"
+]
+[project.entry-points."octoprint.plugin"]
+costestimation = "octoprint_costestimation"
+
+[project.urls]
+Homepage = "https://github.com/Hillshum/OctoPrint-CostEstimation"
+
+[project.optional-dependencies]
+develop = [
+    "go-task-bin",
+]
+
+[project.readme]
+file = "README.md"
+content-type = "text/markdown"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+include = [
+    "octoprint_costestimation",
+    "octoprint_costestimation.*",
+]
