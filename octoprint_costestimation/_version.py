@@ -51,8 +51,10 @@ BRANCH_VERSIONS = """
 
 
 # devel and dev/* are development branches and thus get resolved to 2.0.0.dev for now
-development 3.6.0 987edc9f064e96e2cef1cb3f2886898dd4239f5e
-feature/* 3.6.0 987edc9f064e96e2cef1cb3f2886898dd4239f5e
+development 3.7.0 8a4763d933ec1f57c50d20895d5c73c8941cb2d3
+master 3.7.0 8a4763d933ec1f57c50d20895d5c73c8941cb2d3
+chore/* 3.7.0 8a4763d933ec1f57c50d20895d5c73c8941cb2d3
+feature/* 3.7.0 8a4763d933ec1f57c50d20895d5c73c8941cb2d3
 """
 
 # ---------------------------------------------------------------------------------------
